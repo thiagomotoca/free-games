@@ -1,0 +1,20 @@
+.game {
+  background: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  transition: transform 100ms ease-in-out;
+}
+
+.game:hover {
+  transform: scale(1.05);
+}
+
+.game img {
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.game-content {
+  padding: 30px;
+}
