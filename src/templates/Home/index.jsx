@@ -5,13 +5,15 @@ import "./styles.css";
 import { Games } from "../../components/Games";
 import { loadGames } from "../../utils/load-games";
 import { Button } from "../../components/Button";
+import { TextInput } from "../../components/TextInput";
 
 export class Home extends Component {
   state = {
     games: [],
     allGames: [],
     page: 0,
-    gamesPerPage: 14,
+    gamesPerPage: 6,
+    searchValue: "",
   };
 
   async componentDidMount() {
@@ -37,21 +39,44 @@ export class Home extends Component {
     this.setState({ games, page: nextPage });
   };
 
+  handleChange = (e) => {
+    const { value } = e.target;
+    this.setState({ searchValue: value });
+  };
+
   render() {
-    const { games, page, gamesPerPage, allGames } = this.state;
+    const { games, page, gamesPerPage, allGames, searchValue } = this.state;
     const noMoreGames = page + gamesPerPage >= allGames.length;
+
+    const filteredGames = !!searchValue
+      ? games.filter((game) => {
+          return game.title.toLowerCase().includes(searchValue.toLowerCase());
+        })
+      : games;
 
     return (
       <section className="container">
-        <h1>Free Games</h1>
-        <Games games={games} />
+        <div className="search-container">
+          {!!searchValue && <h1>Search value: {searchValue}</h1>}
+
+          <TextInput
+            searchValue={searchValue}
+            handleChange={this.handleChange}
+          />
+        </div>
+
+        {filteredGames.length > 0 && <Games games={filteredGames} />}
+
+        {filteredGames.length === 0 && <p>Didnt find any game</p>}
 
         <div className="button-container">
-          <Button
-            text="Load more games"
-            onClick={this.loadMoreGames}
-            disabled={noMoreGames}
-          />
+          {!searchValue && (
+            <Button
+              text="Load more games"
+              onClick={this.loadMoreGames}
+              disabled={noMoreGames}
+            />
+          )}
         </div>
       </section>
     );
